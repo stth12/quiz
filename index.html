@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Квиз по правоведению (Малько)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- html2pdf для генерации PDF сертификата с поддержкой кириллицы -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --bg-gradient: radial-gradient(circle at top left, #2b6cb0, #1a202c);
+      --card-bg: rgba(15, 23, 42, 0.9);
+      --accent: #63b3ed;
+      --accent-soft: rgba(99, 179, 237, 0.2);
+      --danger: #f56565;
+      --success: #48bb78;
+      --text-main: #e2e8f0;
+      --text-muted: #a0aec0;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 960px;
+      background: linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.95),
+        rgba(26, 32, 44, 0.98)
+      );
+      border-radius: 24px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .decor-circle {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 179, 237, 0.24), transparent);
+      filter: blur(2px);
+      pointer-events: none;
+    }
+
+    .decor-circle.left {
+      top: -80px;
+      left: -80px;
+    }
+
+    .decor-circle.right {
+      bottom: -100px;
+      right: -60px;
+    }
+
+    header {
+      padding: 18px 28px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #63b3ed, #3182ce);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #0f172a;
+      box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.9);
+    }
+
+    .logo-text {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      padding: 20px 26px 24px;
+    }
+
+    /* глобальный футер (над желтой полосой на скрине) */
+    .global-footer {
+      position: relative;
+      z-index: 1;
+      padding: 0 26px 18px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .global-footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(148, 163, 184, 0.6);
+      padding-bottom: 1px;
+      transition: color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .global-footer a:hover {
+      color: #e2e8f0;
+      border-color: #e2e8f0;
+    }
+
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      main {
+        padding: 18px 16px 20px;
+      }
+      .global-footer {
+        padding: 0 16px 16px;
+      }
+    }
+
+    .screen {
+      display: none;
+      animation: fadeIn 0.35s ease-out;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero {
+      text-align: center;
+      padding: 32px 10px 24px;
+    }
+
+    .hero-title {
+      font-size: clamp(24px, 3vw, 30px);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 18px;
+    }
+
+    .hero-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      font-size: 12px;
+    }
+
+    .chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(99, 179, 237, 0.45);
+      color: #bee3f8;
+    }
+
+    .hero-cta {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease,
+        background 0.12s ease, opacity 0.12s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #63b3ed, #3182ce);
+      color: #0f172a;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(49, 130, 206, 0.6);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 30px rgba(49, 130, 206, 0.7);
+    }
+
+    .btn-secondary {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(30, 41, 59, 0.95);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      padding-inline: 12px;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .pill-counter {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .form-card {
+      max-width: 520px;
+      margin: 8px auto 8px;
+      padding: 20px 18px 16px;
+      border-radius: 18px;
+      background: var(--card-bg);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .form-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .form-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: #cbd5f5;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 8px 11px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+      transition: border 0.12s ease, box-shadow 0.12s ease,
+        background 0.12s ease;
+    }
+
+    .field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(99, 179, 237, 0.4);
+      background: rgba(15, 23, 42, 1);
+    }
+
+    .field-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .error {
+      font-size: 11px;
+      color: var(--danger);
+      margin-top: 3px;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .quiz-progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .progress-bar {
+      position: relative;
+      width: 150px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(30, 41, 59, 0.9);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #63b3ed, #38b2ac);
+      transition: width 0.18s ease;
+    }
+
+    .quiz-body {
+      max-height: 440px;
+      overflow-y: auto;
+      padding-right: 6px;
+      margin-right: -4px;
+    }
+
+    .question-block {
+      margin-bottom: 16px;
+      padding: 14px 13px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top left, #0f172a, #111827);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .question-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .question-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .options {
+      margin-top: 4px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.12s ease, border 0.12s ease, transform 0.08s ease;
+      border: 1px solid transparent;
+      font-size: 13px;
+    }
+
+    .option-label:hover {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(148, 163, 184, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .option-label input {
+      margin-top: 3px;
+      accent-color: #63b3ed;
+    }
+
+    .option-text-strong {
+      font-weight: 500;
+    }
+
+    .result-card {
+      max-width: 560px;
+      margin: 6px auto 6px;
+      padding: 18px 18px 14px;
+      border-radius: 18px;
+      background: radial-gradient(circle at top left, #064e3b, #0f172a);
+      border: 1px solid rgba(72, 187, 120, 0.6);
+    }
+
+    .result-main {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: baseline;
+    }
+
+    .result-score {
+      font-size: 20px;
+      font-weight: 700;
+      color: #c6f6d5;
+    }
+
+    .result-label {
+      font-size: 13px;
+      color: #a0aec0;
+    }
+
+    .result-kpi {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #e6fffa;
+    }
+
+    .kpi-pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(72, 187, 120, 0.7);
+    }
+
+    .answer-list {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.5);
+      font-size: 12px;
+      color: var(--text-muted);
+      max-height: 160px;
+      overflow-y: auto;
+      white-space: pre-line;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="decor-circle left"></div>
+    <div class="decor-circle right"></div>
+
+    <header>
+      <div class="logo">
+        <div class="logo-icon">ID</div>
+        <div class="logo-text">Квиз по правоведению</div>
+      </div>
+      <div class="badge">Учебник А.В. Малько, В.В. Субочев</div>
+    </header>
+
+    <main>
+      <!-- Экран 1: старт -->
+      <section id="screen-start" class="screen active">
+        <div class="hero">
+          <div class="hero-title">Онлайн-тест по правоведению</div>
+          <p class="hero-subtitle">
+            Квиз по дисциплине «Правоведение», основанный на учебнике
+            А.&nbsp;В.&nbsp;Малько, В.&nbsp;В.&nbsp;Субочев «Правоведение».
+            Ответьте на вопросы и получите сертификат с вашим результатом.
+          </p>
+          <div class="hero-chip-row">
+            <span class="chip">15 вопросов</span>
+            <span class="chip">Тема: происхождение государства и права</span>
+            <span class="chip">Индивидуальный результат</span>
+          </div>
+          <div class="hero-cta">
+            <button id="btn-start" class="btn-primary">
+              Начать тест
+              <span>➜</span>
+            </button>
+            <button class="btn-secondary" type="button">
+              Основан на учебнике Малько
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Экран 2: данные пользователя -->
+      <section id="screen-user" class="screen">
+        <div class="form-card">
+          <div class="form-title">Данные участника</div>
+          <div class="form-subtitle">
+            Пожалуйста, заполните поля. Эти данные будут использованы
+            в сертификате по завершении теста.
+          </div>
+
+          <div class="field">
+            <label for="lastName">Фамилия</label>
+            <input id="lastName" type="text" placeholder="Иванов" />
+            <div id="err-lastName" class="error" style="display:none"></div>
+          </div>
+
+          <div class="field">
+            <label for="firstName">Имя</label>
+            <input id="firstName" type="text" placeholder="Иван" />
+            <div id="err-firstName" class="error" style="display:none"></div>
+          </div>
+
+          <div class="field">
+            <label for="group">Группа</label>
+            <input
+              id="group"
+              type="text"
+              placeholder="ПрИ-31"
+            />
+            <div id="err-group" class="error" style="display:none"></div>
+            <div class="field-hint">
+              Пример: ПрИ-31, ИВТ-32, ИБ-33.
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;gap:10px;margin-top:12px;flex-wrap:wrap;">
+            <button type="button" class="btn-ghost" id="btn-back-start">
+              ← Назад
+            </button>
+            <button type="button" class="btn-primary" id="btn-go-quiz">
+              Перейти к вопросам
+              <span>➜</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Экран 3: квиз -->
+      <section id="screen-quiz" class="screen">
+        <div class="quiz-header">
+          <div>
+            <div style="font-size:15px;font-weight:600;margin-bottom:2px;">
+              Тест по правоведению
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);">
+              Основан на учебнике А.&nbsp;В.&nbsp;Малько, В.&nbsp;В.&nbsp;Субочев
+              «Правоведение».
+            </div>
+          </div>
+          <div class="quiz-progress">
+            <div class="pill-counter">
+              Вопросов: <span id="counter-answered">0</span>/<span id="counter-total">15</span>
+            </div>
+            <div class="progress-bar">
+              <div id="progress-fill" class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-body" id="quiz-body"></div>
+
+        <div style="margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+          <button type="button" class="btn-ghost" id="btn-back-user">
+            ← Назад к данным
+          </button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" class="btn-secondary" id="btn-reset-quiz">
+              Сбросить ответы
+            </button>
+            <button type="button" class="btn-primary" id="btn-submit-quiz">
+              Завершить тест
+              <span>✓</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Экран 4: результат -->
+      <section id="screen-result" class="screen">
+        <div class="result-card">
+          <div class="result-main">
+            <div>
+              <div class="result-label">Ваш результат</div>
+              <div class="result-score" id="result-score">0 / 15</div>
+            </div>
+            <div style="text-align:right;font-size:12px;">
+              <div id="result-percent">0%</div>
+              <div id="result-verdict" style="color:#c6f6d5;">—</div>
+            </div>
+          </div>
+
+          <div class="result-kpi">
+            <div class="kpi-pill" id="kpi-user">Студент: —</div>
+            <div class="kpi-pill" id="kpi-group">Группа: —</div>
+            <div class="kpi-pill" id="kpi-answered">Отвечено: —</div>
+          </div>
+
+          <div class="answer-list" id="answer-list"></div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;">
+          <button type="button" class="btn-secondary" id="btn-retake">
+            Пройти ещё раз
+          </button>
+          <button type="button" class="btn-primary" id="btn-download-pdf">
+            Скачать сертификат (PDF)
+          </button>
+        </div>
+
+        <div class="footer-note">
+          Сертификат носит учебный характер и может быть использован как
+          подтверждение прохождения тренировочного теста по дисциплине
+          «Правоведение».
+        </div>
+      </section>
+    </main>
+
+    <!-- Глобальный футер: на всех экранах -->
+    <div class="global-footer">
+      <a href="https://taplink.cc/iddesign" target="_blank" rel="noopener noreferrer">
+        
+      </a>
+    </div>
+
+    <!-- Шаблон сертификата (невидимый блок, из которого делается PDF) -->
+    <div id="certificate" style="display:none; width:210mm; padding:20mm; font-family:'Times New Roman',serif; color:#111; background:#ffffff;">
+      <div style="text-align:center; margin-bottom:20mm;">
+        <div style="font-size:22pt; font-weight:bold;">СЕРТИФИКАТ УЧАСТНИКА</div>
+        <div style="font-size:11pt; margin-top:6mm;">
+          Онлайн-тест по дисциплине «Правоведение»
+        </div>
+        <div style="font-size:10pt; margin-top:2mm;">
+          Основан на учебнике А.&nbsp;В.&nbsp;Малько, В.&nbsp;В.&nbsp;Субочев «Правоведение»
+        </div>
+      </div>
+
+      <div style="font-size:12pt; line-height:1.6;">
+        <p>Подтверждает, что студент(ка)</p>
+        <p style="font-size:14pt; font-weight:bold; margin-top:4mm;">
+          <span id="cert-name"></span>
+        </p>
+        <p style="margin-top:4mm;">
+          группы: <strong><span id="cert-group"></span></strong>
+        </p>
+
+        <p style="margin-top:10mm;">
+          прошёл(ла) онлайн-тест по дисциплине «Правоведение», основанный на учебнике
+          А.&nbsp;В.&nbsp;Малько, В.&nbsp;В.&nbsp;Субочев «Правоведение».
+        </p>
+
+        <p style="margin-top:10mm;">
+          Результат теста:
+          <strong><span id="cert-score"></span></strong>
+          (что составляет <strong><span id="cert-percent"></span></strong> правильных ответов).
+        </p>
+
+        <p style="margin-top:10mm;">
+          Дата прохождения: <span id="cert-date"></span>
+        </p>
+      </div>
+
+      <div style="font-size:9pt; color:#555; margin-top:15mm;">
+        Сертификат носит учебный характер и может быть использован как подтверждение
+        самостоятельной работы по дисциплине «Правоведение».
+      </div>
+
+      <div style="font-size:9pt; color:#555; margin-top:5mm;">
+        
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---- ДАННЫЕ КВИЗА ----
+    const quizData = [
+      {
+        question:
+          "1. Какая теория объясняет происхождение государства осуществлением крупномасштабных социальных работ (ирригация, строительство)?",
+        options: ["Теологическая", "Ирригационная", "Патриархальная", "Психологическая"],
+        correct: 1
+      },
+      {
+        question:
+          "2. Какая теория происхождения государства связывает его с завоеваниями одних племён другими?",
+        options: ["Теория насилия", "Договорная", "Материалистическая", "Органическая"],
+        correct: 0
+      },
+      {
+        question:
+          "3. Кто является классическим представителем патриархальной теории государства?",
+        options: ["Г. Гроций", "Аристотель", "Т. Гоббс", "К. Маркс"],
+        correct: 1
+      },
+      {
+        question:
+          "4. Какая теория выводит государство из божественной воли и сакрального происхождения власти?",
+        options: ["Теологическая", "Договорная", "Материалистическая", "Ирригационная"],
+        correct: 0
+      },
+      {
+        question:
+          "5. Согласно договорной теории, государство возникает в результате:",
+        options: [
+          "Естественного отбора общества",
+          "Соглашения людей о создании политической власти",
+          "Завоевания сильным слабых",
+          "Органического развития общества"
+        ],
+        correct: 1
+      },
+      {
+        question:
+          "6. Какая теория рассматривает государство как результат экономического развития классового общества?",
+        options: [
+          "Органическая",
+          "Психологическая",
+          "Материалистическая (марксистская)",
+          "Патриархальная"
+        ],
+        correct: 2
+      },
+      {
+        question:
+          "7. Какая теория связывает происхождение государства с особенностями человеческой психики (потребность в подчинении и руководстве)?",
+        options: ["Ирригационная", "Психологическая", "Договорная", "Теологическая"],
+        correct: 1
+      },
+      {
+        question:
+          "8. Что, по материалистической теории, является основной причиной появления государства?",
+        options: [
+          "Соглашение людей",
+          "Экономическое развитие и имущественное расслоение",
+          "Божественная воля",
+          "Борьба за религиозное господство"
+        ],
+        correct: 1
+      },
+      {
+        question:
+          "9. Какой фактор, согласно психологической теории, способствует возникновению государства?",
+        options: [
+          "Инстинкт самосохранения",
+          "Инстинкт подражания и стремление к подчинению и руководству",
+          "Стремление к коллективному труду",
+          "Необходимость ирригационных работ"
+        ],
+        correct: 1
+      },
+      {
+        question:
+          "10. Какой признак государства включает право издавать общеобязательные правила поведения?",
+        options: [
+          "Территориальная организация населения",
+          "Суверенитет",
+          "Правотворчество",
+          "Налоговая система"
+        ],
+        correct: 2
+      },
+      {
+        question:
+          "11. Какой признак государства проявляется в монопольном праве применять принуждение?",
+        options: [
+          "Наличие публичной власти",
+          "Территориальность",
+          "Договорная природа государства",
+          "Национальный состав населения"
+        ],
+        correct: 0
+      },
+      {
+        question:
+          "12. Какой элемент НЕ относится к обязательным признакам государства?",
+        options: ["Территория", "Публичная власть", "Экономическая система", "Право"],
+        correct: 2
+      },
+      {
+        question: "13. Что характеризует государственный суверенитет?",
+        options: [
+          "Власть церкви над государством",
+          "Независимость государства и верховенство его власти",
+          "Территория государства",
+          "Система налогообложения"
+        ],
+        correct: 1
+      },
+      {
+        question:
+          "14. К какому признаку государства относится взимание налогов?",
+        options: [
+          "Публичная власть",
+          "Территориальная организация населения",
+          "Налоговая система",
+          "Правовой порядок"
+        ],
+        correct: 2
+      },
+      {
+        question:
+          "15. Согласно учебнику, право — это прежде всего форма выражения:",
+        options: [
+          "Индивидуальной морали",
+          "Государственной воли",
+          "Религиозных догматов",
+          "Экономических отношений"
+        ],
+        correct: 1
+      }
+    ];
+
+    // ---- СОСТОЯНИЕ ----
+    let userData = {
+      lastName: "",
+      firstName: "",
+      group: ""
+    };
+
+    const screens = {
+      start: document.getElementById("screen-start"),
+      user: document.getElementById("screen-user"),
+      quiz: document.getElementById("screen-quiz"),
+      result: document.getElementById("screen-result")
+    };
+
+    function showScreen(name) {
+      Object.values(screens).forEach((el) => el.classList.remove("active"));
+      screens[name].classList.add("active");
+    }
+
+    // ---- РЕНДЕР КВИЗА ----
+    const quizBody = document.getElementById("quiz-body");
+    const counterAnswered = document.getElementById("counter-answered");
+    const counterTotal = document.getElementById("counter-total");
+    const progressFill = document.getElementById("progress-fill");
+    counterTotal.textContent = quizData.length.toString();
+
+    function renderQuiz() {
+      quizBody.innerHTML = "";
+      quizData.forEach((item, qIndex) => {
+        const block = document.createElement("div");
+        block.className = "question-block";
+
+        const title = document.createElement("div");
+        title.className = "question-title";
+        title.textContent = item.question;
+        block.appendChild(title);
+
+        const meta = document.createElement("div");
+        meta.className = "question-meta";
+        meta.textContent = "Выберите один вариант ответа";
+        block.appendChild(meta);
+
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "options";
+
+        item.options.forEach((opt, idx) => {
+          const label = document.createElement("label");
+          label.className = "option-label";
+
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = "q" + qIndex;
+          input.value = idx;
+
+          const textWrap = document.createElement("div");
+          const strongLine = document.createElement("div");
+          strongLine.className = "option-text-strong";
+          strongLine.textContent = String.fromCharCode(65 + idx) + ") " + opt;
+          textWrap.appendChild(strongLine);
+
+          label.appendChild(input);
+          label.appendChild(textWrap);
+          optionsDiv.appendChild(label);
+        });
+
+        block.appendChild(optionsDiv);
+        quizBody.appendChild(block);
+      });
+      updateProgress();
+    }
+
+    function getSelectedAnswers() {
+      const answers = [];
+      let answered = 0;
+      quizData.forEach((_, i) => {
+        const selected = quizBody.querySelector(
+          "input[name='q" + i + "']:checked"
+        );
+        if (selected) {
+          answered++;
+          answers.push(parseInt(selected.value, 10));
+        } else {
+          answers.push(null);
+        }
+      });
+      return { answers, answered };
+    }
+
+    function updateProgress() {
+      const { answered } = getSelectedAnswers();
+      counterAnswered.textContent = answered.toString();
+      const percent = (answered / quizData.length) * 100;
+      progressFill.style.width = percent + "%";
+    }
+
+    quizBody.addEventListener("change", updateProgress);
+
+    // ---- ВАЛИДАЦИЯ ДАННЫХ ПОЛЬЗОВАТЕЛЯ ----
+    function validateUserForm() {
+      const last = document.getElementById("lastName").value.trim();
+      const first = document.getElementById("firstName").value.trim();
+      const group = document.getElementById("group").value.trim();
+
+      let ok = true;
+
+      function setError(id, msg) {
+        const el = document.getElementById(id);
+        if (msg) {
+          el.textContent = msg;
+          el.style.display = "block";
+          ok = false;
+        } else {
+          el.textContent = "";
+          el.style.display = "none";
+        }
+      }
+
+      setError("err-lastName", last ? "" : "Укажите фамилию.");
+      setError("err-firstName", first ? "" : "Укажите имя.");
+      setError("err-group", group ? "" : "Укажите группу.");
+
+      if (!ok) return false;
+
+      userData = { lastName: last, firstName: first, group: group };
+      return true;
+    }
+
+    // ---- ПОДСЧЁТ РЕЗУЛЬТАТА ----
+    function calculateResult() {
+      const { answers, answered } = getSelectedAnswers();
+      let score = 0;
+      const answerLines = [];
+      const letters = ["A", "B", "C", "D"];
+
+      quizData.forEach((item, i) => {
+        const correctIndex = item.correct;
+        const correctOpt = item.options[correctIndex];
+        if (answers[i] === correctIndex) score++;
+
+        const line =
+          (i + 1) +
+          ". Правильный ответ: " +
+          letters[correctIndex] +
+          ") " +
+          correctOpt;
+        answerLines.push(line);
+      });
+
+      const percent = Math.round((score / quizData.length) * 100);
+      return {
+        score,
+        percent,
+        answered,
+        answerLines
+      };
+    }
+
+    function getVerdict(percent) {
+      if (percent >= 90) return "Отличный результат!";
+      if (percent >= 75) return "Хороший уровень подготовки.";
+      if (percent >= 60) return "Удовлетворительно, есть запас для роста.";
+      return "Рекомендуется повторить материал.";
+    }
+
+    function showResult() {
+      const { score, percent, answered, answerLines } = calculateResult();
+
+      document.getElementById("result-score").textContent =
+        score + " / " + quizData.length;
+      document.getElementById("result-percent").textContent = percent + "%";
+      document.getElementById("result-verdict").textContent = getVerdict(percent);
+
+      document.getElementById("kpi-user").textContent =
+        "Студент: " + userData.lastName + " " + userData.firstName;
+      document.getElementById("kpi-group").textContent =
+        "Группа: " + userData.group;
+      document.getElementById("kpi-answered").textContent =
+        "Отвечено: " + answered + " / " + quizData.length;
+
+      document.getElementById("answer-list").textContent =
+        answerLines.join("\n");
+
+      showScreen("result");
+    }
+
+    // ---- PDF СЕРТИФИКАТ (через html2pdf) ----
+    function generatePdfCertificate() {
+      const { score, percent } = calculateResult();
+      const now = new Date();
+      const dateStr = now.toLocaleString("ru-RU", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+      // Подставляем данные в шаблон сертификата
+      document.getElementById("cert-name").textContent =
+        userData.lastName + " " + userData.firstName;
+      document.getElementById("cert-group").textContent = userData.group;
+      document.getElementById("cert-score").textContent =
+        score + " из " + quizData.length;
+      document.getElementById("cert-percent").textContent = percent + "%";
+      document.getElementById("cert-date").textContent = dateStr;
+
+      const element = document.getElementById("certificate");
+      element.style.display = "block";
+
+      const opt = {
+        margin: 10,
+        filename: "cert_pravovedenie.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      };
+
+      html2pdf()
+        .set(opt)
+        .from(element)
+        .save()
+        .then(() => {
+          element.style.display = "none";
+        });
+    }
+
+    // ---- СОБЫТИЯ ----
+    document.getElementById("btn-start").addEventListener("click", () => {
+      showScreen("user");
+    });
+
+    document.getElementById("btn-back-start").addEventListener("click", () => {
+      showScreen("start");
+    });
+
+    document.getElementById("btn-go-quiz").addEventListener("click", () => {
+      if (!validateUserForm()) return;
+      showScreen("quiz");
+    });
+
+    document.getElementById("btn-back-user").addEventListener("click", () => {
+      showScreen("user");
+    });
+
+    document.getElementById("btn-reset-quiz").addEventListener("click", () => {
+      renderQuiz();
+    });
+
+    document.getElementById("btn-submit-quiz").addEventListener("click", () => {
+      const { answered } = getSelectedAnswers();
+      if (answered === 0) {
+        alert("Сначала ответьте хотя бы на один вопрос.");
+        return;
+      }
+      showResult();
+    });
+
+    document.getElementById("btn-retake").addEventListener("click", () => {
+      renderQuiz();
+      showScreen("quiz");
+    });
+
+    document
+      .getElementById("btn-download-pdf")
+      .addEventListener("click", generatePdfCertificate);
+
+    // Первичная отрисовка
+    renderQuiz();
+  </script>
+</body>
+</html>
